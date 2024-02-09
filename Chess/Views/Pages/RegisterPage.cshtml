@@ -1,0 +1,36 @@
+﻿@using Microsoft.AspNetCore.Mvc
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+@model Chess.Models.RegistraionModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<form asp-controller="Player" asp-action="Register">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Name">User Name</label>
+        <input asp-for="Name" class="form-control" placeholder="User Name(maximum 20 charachters)">
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Email">Email address</label>
+        <input asp-for="Email" class="form-control" placeholder="Enter email">
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password">Password</label>
+        <input asp-for="Password" class="form-control" placeholder="Password(must contain numbers and charachters)">
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ConfirmPassword">Confirm Password</label>
+        <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm Password">
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

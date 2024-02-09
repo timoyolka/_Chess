@@ -1,0 +1,33 @@
+﻿@model List<Chess.Models.Game>
+
+<h2>All Games</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Board</th>
+            <th>White</th>
+            <th>White Connection ID</th>
+            <th>Black</th>
+            <th>Black Connection ID</th>
+            <th>Current Player</th>
+            <th>Is Playing</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var game in Model)
+        {
+            <tr>
+                <td>@game.Id</td>
+                <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">@game.Board</td>
+                <td>@game.White</td>
+                <td>@game.WhiteConnectionId</td>
+                <td>@game.Black</td>
+                <td>@game.BlackConnectionId</td>
+                <td>@game.CurrentPlayer</td>
+                <td>@game.IsPlaying</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,14 @@
+﻿@using Chess.Services
+
+@if (Context.Session.GetInt32(SessionKeys.LoggedInKey) == 1)
+{
+    @foreach (var item in Context.Session.Keys)
+    {
+        if (item != SessionKeys.LoggedInKey && item != SessionKeys.SessionUserKey)
+        {
+            <h4>
+                @item : @Context.Session.GetString(item)
+            </h4>
+        } 
+    }
+}

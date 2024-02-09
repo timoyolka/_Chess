@@ -1,0 +1,82 @@
+﻿@using Microsoft.AspNetCore.Mvc
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using Chess.Models;
+@using Newtonsoft.Json;
+@using Chess.Services;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, intial-scale=1.0" />
+        <title>Chess</title>
+        <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/board.css" />
+        <script src="~/lib/signalr/signalr.min.js"></script>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script>
+            const connectionSignalR = new signalR.HubConnectionBuilder()
+                .withUrl("/ChessHub")
+                .build();
+        </script>
+    @await RenderSectionAsync("Styles", required: false)
+    </head>
+    <body>
+        <div class="topnav">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand">Chess</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" asp-area="" asp-controller="Pages" asp-action="Home">Home<span class="sr-only">(current)</span></a>
+                        </li>                     
+                        @{
+                            if(Context.Session.GetInt32(SessionKeys.LoggedInKey) == 0)
+                            {
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-area="" asp-controller="Pages" asp-action="RegisterPage">Register</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-area="" asp-controller="Pages" asp-action="LoginPage">Login</a>
+                                    </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Pages" asp-action="Play">Play</a>
+                                </li>
+                                <li class="nav-item">
+                                <a class="nav-link">Welcome, @Context.Session.GetString(SessionKeys.UserNameKey).Substring(1, Context.Session.GetString(SessionKeys.UserNameKey).Length - 2)</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Player" asp-action="Logout">Logout</a>
+                                </li>
+                            }
+                        }
+                        <li class="nav-item active">
+                            <a class="nav-link" asp-area="" asp-controller="Pages" asp-action="ShowDataBase">ShowDataBase<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" asp-area="" asp-controller="Pages" asp-action="FullyDeleteGames">Fully Delete Games<span class="sr-only">(current)</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+            <div class="container">
+            @* <div class="pb-3">
+                @RenderSection("Title", false)
+            </div> *@ 
+            <div>
+                @RenderBody()
+            </div>
+                
+        </div>
+    </body>
+</html>

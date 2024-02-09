@@ -1,0 +1,18 @@
+﻿@using Chess.Services
+@using Microsoft.AspNetCore.Mvc
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using Chess.Models;
+@using Newtonsoft.Json;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model Chess.Models.Game;
+
+@{
+    ViewData["Title"] = "Play";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <a class="btn btn-primary" asp-area="" asp-controller="Pages" asp-action="FindGame">Play</a>
+</div>

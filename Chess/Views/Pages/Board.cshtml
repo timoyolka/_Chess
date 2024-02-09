@@ -1,0 +1,164 @@
+﻿@using Chess.Services
+@using Microsoft.AspNetCore.Mvc
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using Chess.Models;
+@using Newtonsoft.Json;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model Chess.Models.Game
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Chessboard";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/board.css" />
+}
+
+@if (Context.Session.GetString("Connected") == null || Context.Session.GetString("Connected") == "false")
+{
+    <script src="~/script/connect.js"></script>
+    Context.Session.SetString("Connected", "true");
+    <script>
+        var gameId = @Html.Raw(Json.Serialize(Model.Id));
+        console.log(@Html.Raw(Json.Serialize(Model)));
+        joinGameOnPageLoad(gameId);
+    </script>
+    <script src="~/script/move.js"></script>
+}
+
+
+
+<title>Chess Board</title>
+
+<div class="container chess-board mt-4">
+    @{
+        if (!string.IsNullOrEmpty(Model.Board))
+        {
+            char[,] board = ConvertStringToBoard(Model.Board);
+
+            for (var rank = 0; rank < 8; rank++)
+            {
+                    <div class="row">
+                        @for (var file = 0; file < 8; file++)
+                    {
+                            <div class="col square @(IsDarkSquare(file, rank) ? "black" : "white")" data-file="@file" data-rank="@rank">
+                                <div class="piece">@Html.Raw(ConvertToChessPieceHtml(board[rank, file]))</div>
+                            </div>
+                    }
+                    </div>
+            }
+        }
+    }
+</div>
+<div class="container mt-5">
+    <a asp-controller="Pages" asp-action="FinishGame" class="btn btn-primary">Finish Game</a>
+</div>
+<div class="container mt-5">
+    <h2 class="mb-4">Game Details</h2>
+    <dl class="row">
+        <dt class="col-sm-3">Id</dt>
+        <dd class="col-sm-9">@Model.Id</dd>
+
+        <dt class="col-sm-3">Board</dt>
+        <dd class="col-sm-9">@Model.Board</dd>
+
+        <dt class="col-sm-3">White</dt>
+        <dd class="col-sm-9">@Model.White</dd>
+
+        <dt class="col-sm-3">White connection id</dt>
+        <dd class="col-sm-9">@Model.WhiteConnectionId</dd>
+
+        <dt class="col-sm-3">Black</dt>
+        <dd class="col-sm-9">@Model.Black</dd>
+
+        <dt class="col-sm-3">Black connection id</dt>
+        <dd class="col-sm-9">@Model.BlackConnectionId</dd>
+
+        <dt class="col-sm-3">CurrentPlayer</dt>
+        <dd class="col-sm-9">@Model.CurrentPlayer</dd>
+
+        <dt class="col-sm-3">IsPlaying</dt>
+        <dd class="col-sm-9">@Model.IsPlaying</dd>
+    </dl>
+</div>
+
+
+
+@functions
+{
+    bool IsDarkSquare(int file, int rank)
+    {
+        return (file + rank) % 2 == 1;
+    }
+
+    public char[,] ConvertStringToBoard(string boardString)
+    {
+        char[,] board = new char[8, 8];
+
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                board[i, j] = ' ';
+            }
+        }
+
+        for (int i = 0; i < boardString.Length; ++i)
+        {
+            if (boardString[i] == '/')
+            {
+                if (char.IsDigit(boardString[i - 2]))
+                {
+                    int x = (char)boardString[i - 3] - 'a';
+                    int y = (char)boardString[i - 2] - '0' - 1;
+                    if (x >= 0 && x < 8 && y >= 0 && y < 8)
+                    {
+                        char piece = boardString[i - 1];
+                        board[y, x] = piece;
+                        //board[y, x] = piece.ToString();
+                    }
+                }
+            }
+        }
+
+        return board;
+    }
+
+    public string ConvertToChessPieceHtml(char pieceChar)
+    {
+        string pieceColorClass = char.IsUpper(pieceChar) ? "white-piece" : "black-piece";
+
+        switch (pieceChar)
+        {
+            case 'P':
+                return $"<span class='{pieceColorClass}'>♙</span>"; // White Pawn
+            case 'N':
+                return $"<span class='{pieceColorClass}'>♘</span>"; // White Knight
+            case 'B':
+                return $"<span class='{pieceColorClass}'>♗</span>"; // White Bishop
+            case 'R':
+                return $"<span class='{pieceColorClass}'>♖</span>"; // White Rook
+            case 'Q':
+                return $"<span class='{pieceColorClass}'>♕</span>"; // White Queen
+            case 'K':
+                return $"<span class='{pieceColorClass}'>♔</span>"; // White King
+            case 'p':
+                return $"<span class='{pieceColorClass}'>♟</span>"; // Black Pawn
+            case 'n':
+                return $"<span class='{pieceColorClass}'>♞</span>"; // Black Knight
+            case 'b':
+                return $"<span class='{pieceColorClass}'>♝</span>"; // Black Bishop
+            case 'r':
+                return $"<span class='{pieceColorClass}'>♜</span>"; // Black Rook
+            case 'q':
+                return $"<span class='{pieceColorClass}'>♛</span>"; // Black Queen
+            case 'k':
+                return $"<span class='{pieceColorClass}'>♚</span>"; // Black King
+            default:
+                return ""; // empty square
+        }
+    }
+}

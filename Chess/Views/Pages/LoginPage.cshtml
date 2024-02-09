@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNetCore.Mvc
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using Chess.Models;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model Login
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div>
+    @Html.ValidationSummary()
+</div>
+
+
+
+<form asp-controller="Player" asp-action="Login">
+    <div class="form-group">
+        <label asp-for="Name">User Name</label>
+        <input asp-for="Name" class="form-control" placeholder="User Name">
+    </div>
+    <div class="form-group">
+        <label asp-for="Password">Password</label>
+        <input asp-for="Password" class="form-control" placeholder="Password">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
